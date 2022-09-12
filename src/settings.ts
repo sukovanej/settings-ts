@@ -4,13 +4,17 @@ import {
   createValidationError,
   SettingsParseError,
 } from "./errors";
+import { ValidateResult } from "./validateResult";
 
 type SettingsInput = Record<string, string>;
 
-export type TypeOf<T extends SettingsSpecStruct> =
-  { [K in keyof T]: ReturnType<T[K]['validate']> extends SettingsValidateResult<infer K> ? K : never};
+export type TypeOf<T extends SettingsSpecStruct> = {
+  [K in keyof T]: ReturnType<T[K]["validate"]> extends ValidateResult<infer K>
+    ? K
+    : never;
+};
 
-export type TypeFromSettings<S extends Settings<{}>> =
+export type TypeFromSettings<S extends Settings<SettingsSpecStruct>> =
   S extends Settings<infer T> ? TypeOf<T> : never;
 
 type SettingsParserFn<T extends SettingsSpecStruct> = (
@@ -22,19 +26,9 @@ export interface Settings<T extends SettingsSpecStruct> {
   parseUnsafe: (input: SettingsInput) => TypeOf<T>;
 }
 
-export type SettingsValidateResult<T> = E.Either<string, T>;
-
-export const successValidateResult = <T>(
-  result: T
-): SettingsValidateResult<T> => E.of(result);
-
-export const errorValidateResult = <T>(
-  result: string
-): SettingsValidateResult<T> => E.left(result);
-
 export type SettingsSpec<T = unknown> = {
   type: string;
-  validate: (value: string) => SettingsValidateResult<T>;
+  validate: (value: string) => ValidateResult<T>;
 };
 
 type SettingsSpecStruct = Record<string, SettingsSpec>;
@@ -46,19 +40,24 @@ export const createSettings = <T extends SettingsSpecStruct>(
 
   return {
     parse,
-    parseUnsafe: createParseUnsafe(parse)
+    parseUnsafe: createParseUnsafe(parse),
   };
 };
 
-const createParseUnsafe = <T extends SettingsSpecStruct>(parse: SettingsParserFn<T>) =>
+const createParseUnsafe =
+  <T extends SettingsSpecStruct>(parse: SettingsParserFn<T>) =>
   (input: SettingsInput): TypeOf<T> => {
     const result = parse(input);
+
     if (E.isLeft(result)) {
-      throw result.left;
+      const error = result.left;
+      throw new Error(
+        `Failed validating field '${error.fieldName}' with error '${error.error}'.`
+      );
     }
 
     return result.right;
-  }
+  };
 
 const createParser =
   <T extends SettingsSpecStruct>(struct: T): SettingsParserFn<T> =>
