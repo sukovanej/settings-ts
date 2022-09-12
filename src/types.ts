@@ -13,3 +13,5 @@ export type IntegerRange<L, U> = Integer & {
   _lowerBound: L;
   _upperBound: U;
 };
+
+export type Port = IntegerRange<0, 65536>;

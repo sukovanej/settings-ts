@@ -94,4 +94,30 @@ describe("specs", () => {
       E.left(createValidationError("port", "Expected integer in range 0-256."))
     );
   });
+
+  test("port: success", () => {
+    const settings = createSettings({ port: S.port });
+
+    expect(settings.parse({ port: "0" })).toStrictEqual(E.of({ port: 0 }));
+    expect(settings.parse({ port: "10" })).toStrictEqual(E.of({ port: 10 }));
+    expect(settings.parse({ port: "5453" })).toStrictEqual(
+      E.of({ port: 5453 })
+    );
+  });
+
+  test("port: fail", () => {
+    const settings = createSettings({ port: S.port });
+
+    expect(settings.parse({ port: "65537" })).toStrictEqual(
+      E.left(
+        createValidationError("port", "Expected integer in range 0-65536.")
+      )
+    );
+
+    expect(settings.parse({ port: "-1" })).toStrictEqual(
+      E.left(
+        createValidationError("port", "Expected integer in range 0-65536.")
+      )
+    );
+  });
 });

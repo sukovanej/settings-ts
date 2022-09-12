@@ -64,3 +64,5 @@ export const integerRange = <L extends number, U extends number>(
       ? successResult(n as IntegerRange<L, U>)
       : errorResult(`Expected integer in range ${lowerBound}-${upperBound}.`)
   )(integer);
+
+export const port = integerRange(0, 65536);
