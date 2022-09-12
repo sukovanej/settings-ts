@@ -4,14 +4,12 @@ import { Integer, IntegerRange, PositiveInteger } from "./types";
 import { errorResult, successResult } from "./validateResult";
 
 export const string: SettingsSpec<string> = {
-  type: "string-spec",
   validate: (s) => successResult(s),
 };
 
 export const EMPTY_STRING_ERROR_DESCRIPTION = "Value length must be non-zero.";
 
 export const nonEmptyString: SettingsSpec<string> = {
-  type: "non-empty-string-spec",
   validate: (s) =>
     s.length > 0
       ? successResult(s)
@@ -19,7 +17,6 @@ export const nonEmptyString: SettingsSpec<string> = {
 };
 
 export const url: SettingsSpec<URL> = {
-  type: "url-spec",
   validate: (s) => {
     try {
       return successResult(new URL(s));
@@ -30,7 +27,6 @@ export const url: SettingsSpec<URL> = {
 };
 
 export const number: SettingsSpec<number> = {
-  type: "url-spec",
   validate: (s) => {
     if (!/^-?\d+(\.\d+)?$/.test(s)) {
       return errorResult("Expected number.");
@@ -66,3 +62,5 @@ export const integerRange = <L extends number, U extends number>(
   )(integer);
 
 export const port = integerRange(0, 65536);
+
+export const postgresURI = compose()

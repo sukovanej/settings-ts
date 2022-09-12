@@ -9,8 +9,8 @@ import { ValidateResult } from "./validateResult";
 type SettingsInput = Record<string, string>;
 
 export type TypeOf<T extends SettingsSpecStruct> = {
-  [K in keyof T]: ReturnType<T[K]["validate"]> extends ValidateResult<infer K>
-    ? K
+  [K in keyof T]: ReturnType<T[K]["validate"]> extends ValidateResult<infer R>
+    ? R
     : never;
 };
 
@@ -27,7 +27,6 @@ export interface Settings<T extends SettingsSpecStruct> {
 }
 
 export type SettingsSpec<T = unknown> = {
-  type: string;
   validate: (value: string) => ValidateResult<T>;
 };
 

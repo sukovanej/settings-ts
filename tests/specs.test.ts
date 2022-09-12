@@ -120,4 +120,16 @@ describe("specs", () => {
       )
     );
   });
+
+
+
+  test("exmple: nodejs server app", () => {
+    const settings = createSettings({ port: S.port, externalApi: S.url, database: S.postgresURI });
+
+    expect(settings.parse({ port: "0" })).toStrictEqual(E.of({ port: 0 }));
+    expect(settings.parse({ port: "10" })).toStrictEqual(E.of({ port: 10 }));
+    expect(settings.parse({ port: "5453" })).toStrictEqual(
+      E.of({ port: 5453 })
+    );
+  });
 });
