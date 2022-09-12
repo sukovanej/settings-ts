@@ -1,6 +1,6 @@
 import { SettingsSpec } from "./settings";
 import { compose } from "./specCombinators";
-import { Integer, PositiveInteger } from "./types";
+import { Integer, IntegerRange, PositiveInteger } from "./types";
 import { errorResult, successResult } from "./validateResult";
 
 export const string: SettingsSpec<string> = {
@@ -54,3 +54,13 @@ export const positiveInteger: SettingsSpec<PositiveInteger> = compose<
     ? successResult(n as PositiveInteger)
     : errorResult("Expected positive integer.")
 )(integer);
+
+export const integerRange = <L extends number, U extends number>(
+  lowerBound: L,
+  upperBound: U
+): SettingsSpec<IntegerRange<L, U>> =>
+  compose<Integer, IntegerRange<L, U>>((n) =>
+    n >= lowerBound && n <= upperBound
+      ? successResult(n as IntegerRange<L, U>)
+      : errorResult(`Expected integer in range ${lowerBound}-${upperBound}.`)
+  )(integer);

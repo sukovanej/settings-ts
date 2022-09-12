@@ -74,4 +74,24 @@ describe("specs", () => {
       E.left(createValidationError("port", "Expected positive integer."))
     );
   });
+
+  test("integerRange: success", () => {
+    const settings = createSettings({ port: S.integerRange(0, 256) });
+
+    expect(settings.parse({ port: "0" })).toStrictEqual(E.of({ port: 0 }));
+    expect(settings.parse({ port: "10" })).toStrictEqual(E.of({ port: 10 }));
+    expect(settings.parse({ port: "256" })).toStrictEqual(E.of({ port: 256 }));
+  });
+
+  test("integerRange: fail", () => {
+    const settings = createSettings({ port: S.integerRange(0, 256) });
+
+    expect(settings.parse({ port: "257" })).toStrictEqual(
+      E.left(createValidationError("port", "Expected integer in range 0-256."))
+    );
+
+    expect(settings.parse({ port: "-1" })).toStrictEqual(
+      E.left(createValidationError("port", "Expected integer in range 0-256."))
+    );
+  });
 });
