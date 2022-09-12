@@ -121,15 +121,25 @@ describe("specs", () => {
     );
   });
 
-
-
   test("exmple: nodejs server app", () => {
-    const settings = createSettings({ port: S.port, externalApi: S.url, database: S.postgresURI });
+    const settings = createSettings({
+      port: S.port,
+      externalApi: S.url,
+      database: S.postgresURI,
+    });
 
-    expect(settings.parse({ port: "0" })).toStrictEqual(E.of({ port: 0 }));
-    expect(settings.parse({ port: "10" })).toStrictEqual(E.of({ port: 10 }));
-    expect(settings.parse({ port: "5453" })).toStrictEqual(
-      E.of({ port: 5453 })
+    expect(
+      settings.parse({
+        port: "3000",
+        externalApi: "http://api.internal/api",
+        database: "postgres://localhost:5432/db",
+      })
+    ).toStrictEqual(
+      E.of({
+        port: 3000,
+        externalApi: new URL("http://api.internal/api"),
+        database: { user: null, password: null, host: "localhost", port: 5432, database: "db" },
+      })
     );
   });
 });

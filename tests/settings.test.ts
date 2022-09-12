@@ -41,10 +41,7 @@ describe("createSettings", () => {
 
     expect(settings.parse({ connectionString: "" })).toStrictEqual(
       E.left(
-        createValidationError(
-          "connectionString",
-          S.EMPTY_STRING_ERROR_DESCRIPTION
-        )
+        createValidationError("connectionString", "Expected non-empty string.")
       )
     );
   });
