@@ -1,4 +1,6 @@
 import { SettingsSpec } from "./settings";
+import { compose } from "./specCombinators";
+import { Integer } from "./types";
 import { errorResult, successResult } from "./validateResult";
 
 export const string: SettingsSpec<string> = {
@@ -30,10 +32,16 @@ export const url: SettingsSpec<URL> = {
 export const number: SettingsSpec<number> = {
   type: "url-spec",
   validate: (s) => {
-    if (!/^-?\d+$/.test(s)) {
+    if (!/^-?\d+(\.\d+)?$/.test(s)) {
       return errorResult("Expected number.");
     }
 
-    return successResult(parseInt(s));
+    return successResult(parseFloat(s));
   },
 };
+
+export const integer: SettingsSpec<Integer> = compose<number, Integer>((n) =>
+  Number.isInteger(n)
+    ? successResult(n as Integer)
+    : errorResult("Expected integer.")
+)(number);
