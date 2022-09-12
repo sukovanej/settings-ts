@@ -21,6 +21,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:tsd": "tsd",
     "lint": "eslint .",
     "lint:fix": "prettier --write .",
     "build": "yarn tsc -p tsconfig.release.json"
