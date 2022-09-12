@@ -26,3 +26,14 @@ export const url: SettingsSpec<URL> = {
     }
   },
 };
+
+export const number: SettingsSpec<number> = {
+  type: "url-spec",
+  validate: (s) => {
+    if (!/^-?\d+$/.test(s)) {
+      return errorResult("Expected number.");
+    }
+
+    return successResult(parseInt(s));
+  },
+};
