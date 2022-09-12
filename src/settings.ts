@@ -51,9 +51,8 @@ const createParseUnsafe =
 
     if (E.isLeft(result)) {
       const error = result.left;
-      throw new Error(
-        `Failed validating field '${error.fieldName}' with error '${error.error}'.`
-      );
+      const errorMessage = `Failed validating field '${error.fieldName}' with error '${error.error}'.`;
+      throw new Error(errorMessage);
     }
 
     return result.right;
