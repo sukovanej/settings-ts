@@ -1,6 +1,6 @@
 import { SettingsSpec } from "./settings";
 import { compose } from "./specCombinators";
-import { Integer } from "./types";
+import { Integer, PositiveInteger } from "./types";
 import { errorResult, successResult } from "./validateResult";
 
 export const string: SettingsSpec<string> = {
@@ -45,3 +45,12 @@ export const integer: SettingsSpec<Integer> = compose<number, Integer>((n) =>
     ? successResult(n as Integer)
     : errorResult("Expected integer.")
 )(number);
+
+export const positiveInteger: SettingsSpec<PositiveInteger> = compose<
+  Integer,
+  PositiveInteger
+>((n) =>
+  n > 0
+    ? successResult(n as PositiveInteger)
+    : errorResult("Expected positive integer.")
+)(integer);

@@ -37,4 +37,41 @@ describe("specs", () => {
       E.left(createValidationError("port", "Expected integer."))
     );
   });
+
+  test("positiveInteger: success", () => {
+    const settings = createSettings({ port: S.positiveInteger });
+
+    expect(settings.parse({ port: "12" })).toStrictEqual(E.of({ port: 12 }));
+    expect(settings.parse({ port: "23123" })).toStrictEqual(
+      E.of({ port: 23123 })
+    );
+  });
+
+  test("positiveInteger: fail", () => {
+    const settings = createSettings({ port: S.positiveInteger });
+
+    expect(settings.parse({ port: "http://localhost" })).toStrictEqual(
+      E.left(createValidationError("port", "Expected number."))
+    );
+
+    expect(settings.parse({ port: "2.34" })).toStrictEqual(
+      E.left(createValidationError("port", "Expected integer."))
+    );
+
+    expect(settings.parse({ port: "-3.1415" })).toStrictEqual(
+      E.left(createValidationError("port", "Expected integer."))
+    );
+
+    expect(settings.parse({ port: "0" })).toStrictEqual(
+      E.left(createValidationError("port", "Expected positive integer."))
+    );
+
+    expect(settings.parse({ port: "-120" })).toStrictEqual(
+      E.left(createValidationError("port", "Expected positive integer."))
+    );
+
+    expect(settings.parse({ port: "-0" })).toStrictEqual(
+      E.left(createValidationError("port", "Expected positive integer."))
+    );
+  });
 });
