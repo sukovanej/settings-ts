@@ -138,7 +138,13 @@ describe("specs", () => {
       E.of({
         port: 3000,
         externalApi: new URL("http://api.internal/api"),
-        database: { user: null, password: null, host: "localhost", port: 5432, database: "db" },
+        database: {
+          user: null,
+          password: null,
+          host: "localhost",
+          port: 5432,
+          database: "db",
+        },
       })
     );
   });

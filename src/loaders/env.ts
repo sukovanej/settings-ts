@@ -1,5 +1,5 @@
-import { Loader } from "../loader"
+import { Loader } from "../loader";
 
-export const envLoader: Loader = ({
+export const envLoader: Loader = {
   load: () => process.env,
-})
+};

@@ -7,6 +7,7 @@ import {
 import { ValidateResult } from "./validateResult";
 
 export type SettingsInput = Record<string, string | undefined>;
+export type SettingsSpecStruct = Record<string, SettingsSpec>;
 
 export type TypeOf<T extends SettingsSpecStruct> = {
   [K in keyof T]: ReturnType<T[K]["validate"]> extends ValidateResult<infer R>
@@ -29,8 +30,6 @@ export interface SettingsParser<T extends SettingsSpecStruct> {
 export type SettingsSpec<T = unknown> = {
   validate: (value: string) => ValidateResult<T>;
 };
-
-type SettingsSpecStruct = Record<string, SettingsSpec>;
 
 export const createParser = <T extends SettingsSpecStruct>(
   struct: T

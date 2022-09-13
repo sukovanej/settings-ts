@@ -94,5 +94,5 @@ export const postgresURI: SettingsSpec<PostgresURI> = createSpec((s) => {
     );
   }
 
-  return errorResult('Expected postgres URI.');
+  return errorResult("Expected postgres URI.");
 });
