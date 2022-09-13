@@ -1,6 +1,6 @@
 import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
-import { SettingsSpec } from "../settings";
+import { SettingsSpec } from "../parser";
 import { errorResult, successResult, ValidateResult } from "../validateResult";
 import { createSpec } from "./basic";
 

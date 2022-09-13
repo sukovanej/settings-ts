@@ -1,11 +1,11 @@
 import * as E from "fp-ts/Either";
-import { createSettings } from "../src";
+import { createParser } from "../src";
 import { createValidationError } from "../src/errors";
 import * as S from "../src/specs";
 
 describe("specs", () => {
   test("number: success", () => {
-    const settings = createSettings({ port: S.number });
+    const settings = createParser({ port: S.number });
     expect(settings.parse({ port: "-12" })).toStrictEqual(E.of({ port: -12 }));
     expect(settings.parse({ port: "2.34" })).toStrictEqual(
       E.of({ port: 2.34 })
@@ -13,21 +13,21 @@ describe("specs", () => {
   });
 
   test("number: fail", () => {
-    const settings = createSettings({ port: S.number });
+    const settings = createParser({ port: S.number });
     expect(settings.parse({ port: "http://localhost" })).toStrictEqual(
       E.left(createValidationError("port", "Expected number."))
     );
   });
 
   test("integer: success", () => {
-    const settings = createSettings({ port: S.integer });
+    const settings = createParser({ port: S.integer });
 
     expect(settings.parse({ port: "12" })).toStrictEqual(E.of({ port: 12 }));
     expect(settings.parse({ port: "-23" })).toStrictEqual(E.of({ port: -23 }));
   });
 
   test("integer: fail", () => {
-    const settings = createSettings({ port: S.integer });
+    const settings = createParser({ port: S.integer });
 
     expect(settings.parse({ port: "http://localhost" })).toStrictEqual(
       E.left(createValidationError("port", "Expected number."))
@@ -39,7 +39,7 @@ describe("specs", () => {
   });
 
   test("positiveInteger: success", () => {
-    const settings = createSettings({ port: S.positiveInteger });
+    const settings = createParser({ port: S.positiveInteger });
 
     expect(settings.parse({ port: "12" })).toStrictEqual(E.of({ port: 12 }));
     expect(settings.parse({ port: "23123" })).toStrictEqual(
@@ -48,7 +48,7 @@ describe("specs", () => {
   });
 
   test("positiveInteger: fail", () => {
-    const settings = createSettings({ port: S.positiveInteger });
+    const settings = createParser({ port: S.positiveInteger });
 
     expect(settings.parse({ port: "http://localhost" })).toStrictEqual(
       E.left(createValidationError("port", "Expected number."))
@@ -76,7 +76,7 @@ describe("specs", () => {
   });
 
   test("integerRange: success", () => {
-    const settings = createSettings({ port: S.integerRange(0, 256) });
+    const settings = createParser({ port: S.integerRange(0, 256) });
 
     expect(settings.parse({ port: "0" })).toStrictEqual(E.of({ port: 0 }));
     expect(settings.parse({ port: "10" })).toStrictEqual(E.of({ port: 10 }));
@@ -84,7 +84,7 @@ describe("specs", () => {
   });
 
   test("integerRange: fail", () => {
-    const settings = createSettings({ port: S.integerRange(0, 256) });
+    const settings = createParser({ port: S.integerRange(0, 256) });
 
     expect(settings.parse({ port: "257" })).toStrictEqual(
       E.left(createValidationError("port", "Expected integer in range 0-256."))
@@ -96,7 +96,7 @@ describe("specs", () => {
   });
 
   test("port: success", () => {
-    const settings = createSettings({ port: S.port });
+    const settings = createParser({ port: S.port });
 
     expect(settings.parse({ port: "0" })).toStrictEqual(E.of({ port: 0 }));
     expect(settings.parse({ port: "10" })).toStrictEqual(E.of({ port: 10 }));
@@ -106,7 +106,7 @@ describe("specs", () => {
   });
 
   test("port: fail", () => {
-    const settings = createSettings({ port: S.port });
+    const settings = createParser({ port: S.port });
 
     expect(settings.parse({ port: "65537" })).toStrictEqual(
       E.left(
@@ -122,7 +122,7 @@ describe("specs", () => {
   });
 
   test("exmple: nodejs server app", () => {
-    const settings = createSettings({
+    const settings = createParser({
       port: S.port,
       externalApi: S.url,
       database: S.postgresURI,

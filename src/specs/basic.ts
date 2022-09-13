@@ -1,4 +1,4 @@
-import { SettingsSpec } from "../settings";
+import { SettingsSpec } from "../parser";
 import { compose } from "../specCombinators";
 import { Integer, IntegerRange, PositiveInteger } from "../types";
 import { errorResult, successResult, ValidateResult } from "../validateResult";

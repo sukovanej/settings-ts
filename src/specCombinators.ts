@@ -1,5 +1,5 @@
 import * as E from "fp-ts/either";
-import { SettingsSpec } from "./settings";
+import { SettingsSpec } from "./parser";
 import { ValidateResult } from "./validateResult";
 
 export const compose =

@@ -1,9 +1,9 @@
-import { createSettings } from "../src/settings";
+import { createParser } from "../src/parser";
 import * as S from "../src/specs";
 
 describe("parseUnsafe", () => {
   test("succeeds for string spec", () => {
-    const settings = createSettings({ connectionString: S.string });
+    const settings = createParser({ connectionString: S.string });
 
     expect(settings.parseUnsafe({ connectionString: "hello" })).toStrictEqual({
       connectionString: "hello",
@@ -11,7 +11,7 @@ describe("parseUnsafe", () => {
   });
 
   test("fails when input field is missing", () => {
-    const settings = createSettings({ connectionString: S.string });
+    const settings = createParser({ connectionString: S.string });
 
     expect(() => settings.parseUnsafe({})).toThrow(
       Error(

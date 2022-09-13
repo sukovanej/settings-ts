@@ -6,7 +6,7 @@ import {
 } from "./errors";
 import { ValidateResult } from "./validateResult";
 
-type SettingsInput = Record<string, string>;
+export type SettingsInput = Record<string, string | undefined>;
 
 export type TypeOf<T extends SettingsSpecStruct> = {
   [K in keyof T]: ReturnType<T[K]["validate"]> extends ValidateResult<infer R>
@@ -14,14 +14,14 @@ export type TypeOf<T extends SettingsSpecStruct> = {
     : never;
 };
 
-export type TypeFromSettings<S extends Settings<SettingsSpecStruct>> =
-  S extends Settings<infer T> ? TypeOf<T> : never;
+export type TypeFromSettings<S extends SettingsParser<SettingsSpecStruct>> =
+  S extends SettingsParser<infer T> ? TypeOf<T> : never;
 
 type SettingsParserFn<T extends SettingsSpecStruct> = (
   input: SettingsInput
 ) => E.Either<SettingsParseError, TypeOf<T>>;
 
-export interface Settings<T extends SettingsSpecStruct> {
+export interface SettingsParser<T extends SettingsSpecStruct> {
   parse: SettingsParserFn<T>;
   parseUnsafe: (input: SettingsInput) => TypeOf<T>;
 }
@@ -32,10 +32,10 @@ export type SettingsSpec<T = unknown> = {
 
 type SettingsSpecStruct = Record<string, SettingsSpec>;
 
-export const createSettings = <T extends SettingsSpecStruct>(
+export const createParser = <T extends SettingsSpecStruct>(
   struct: T
-): Settings<T> => {
-  const parse = createParser(struct);
+): SettingsParser<T> => {
+  const parse = createParserFn(struct);
 
   return {
     parse,
@@ -57,7 +57,7 @@ const createParseUnsafe =
     return result.right;
   };
 
-const createParser =
+const createParserFn =
   <T extends SettingsSpecStruct>(struct: T): SettingsParserFn<T> =>
   (input: SettingsInput) => {
     const result: Record<string, unknown> = {};

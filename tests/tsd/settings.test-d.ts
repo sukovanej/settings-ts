@@ -1,15 +1,15 @@
 import { expectType } from "tsd";
 import {
-  createSettings,
-  Settings,
+  createParser,
+  SettingsParser,
   SettingsSpec,
   TypeFromSettings,
-} from "../../src/settings";
+} from "../../src/parser";
 import * as S from "../../src/specs";
 
-const urlSettings = createSettings({ v: S.url });
+const urlSettings = createParser({ v: S.url });
 
-expectType<Settings<{ v: SettingsSpec<URL> }>>(urlSettings);
+expectType<SettingsParser<{ v: SettingsSpec<URL> }>>(urlSettings);
 
 expectType<{ v: URL }>(urlSettings.parseUnsafe({}));
 

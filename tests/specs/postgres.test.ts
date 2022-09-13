@@ -1,9 +1,9 @@
 import * as E from "fp-ts/Either";
-import { createSettings } from "../../src";
+import { createParser } from "../../src";
 import * as S from "../../src/specs";
 
 describe("postgres spec", () => {
-  const settings = createSettings({ db: S.postgresURI });
+  const settings = createParser({ db: S.postgresURI });
 
   const assertValidPostgresURI = (db: string, s: Record<string, unknown>) => {
     expect(settings.parse({ db })).toStrictEqual(E.of({ db: s }));

@@ -3,17 +3,17 @@ import {
   createMissingFieldParseError,
   createValidationError,
 } from "../src/errors";
-import { createSettings } from "../src/settings";
+import { createParser } from "../src/parser";
 import * as S from "../src/specs";
 
-describe("createSettings", () => {
+describe("createParser", () => {
   test("succeeds for empty settings struct", () => {
-    const settings = createSettings({});
+    const settings = createParser({});
     expect(settings.parse({})).toStrictEqual(E.of({}));
   });
 
   test("succeeds for string spec", () => {
-    const settings = createSettings({ connectionString: S.string });
+    const settings = createParser({ connectionString: S.string });
 
     expect(settings.parse({ connectionString: "hello" })).toStrictEqual(
       E.of({ connectionString: "hello" })
@@ -21,7 +21,7 @@ describe("createSettings", () => {
   });
 
   test("succeeds for nonEmptyString spec", () => {
-    const settings = createSettings({ connectionString: S.nonEmptyString });
+    const settings = createParser({ connectionString: S.nonEmptyString });
 
     expect(settings.parse({ connectionString: "hello" })).toStrictEqual(
       E.of({ connectionString: "hello" })
@@ -29,7 +29,7 @@ describe("createSettings", () => {
   });
 
   test("fails when input field is missing", () => {
-    const settings = createSettings({ connectionString: S.string });
+    const settings = createParser({ connectionString: S.string });
 
     expect(settings.parse({})).toStrictEqual(
       E.left(createMissingFieldParseError("connectionString"))
@@ -37,7 +37,7 @@ describe("createSettings", () => {
   });
 
   test("fails when input field has different type", () => {
-    const settings = createSettings({ connectionString: S.nonEmptyString });
+    const settings = createParser({ connectionString: S.nonEmptyString });
 
     expect(settings.parse({ connectionString: "" })).toStrictEqual(
       E.left(
@@ -47,7 +47,7 @@ describe("createSettings", () => {
   });
 
   test("fails for not valid URL", () => {
-    const settings = createSettings({ url: S.url });
+    const settings = createParser({ url: S.url });
 
     expect(settings.parse({ url: "not-valid-url" })).toStrictEqual(
       E.left(
@@ -60,7 +60,7 @@ describe("createSettings", () => {
   });
 
   test("succeeds for URL spec", () => {
-    const settings = createSettings({ url: S.url });
+    const settings = createParser({ url: S.url });
 
     expect(settings.parse({ url: "http://domain.com/" })).toStrictEqual(
       E.of({ url: new URL("http://domain.com/") })

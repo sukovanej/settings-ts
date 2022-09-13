@@ -1,1 +1,1 @@
-export { createSettings } from "./settings";
+export { createParser } from "./parser";
