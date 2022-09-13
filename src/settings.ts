@@ -3,6 +3,7 @@ import { pipe } from "fp-ts/function";
 import { Loader } from "./loader";
 import { createParser, SettingsSpecStruct, TypeOf } from "./parser";
 import { SettingsParseError } from "./errors";
+import { envLoader } from "./loaders";
 
 interface Settings<E, S extends SettingsSpecStruct> {
   load: IOE.IOEither<E, TypeOf<S>>;
@@ -21,3 +22,8 @@ export const createSettings = <E, T extends SettingsSpecStruct>(
 
   return { load };
 };
+
+export const createEnvSettings = <T extends SettingsSpecStruct>(
+  struct: T
+): Settings<SettingsParseError, T> =>
+  createSettings(struct, { loader: envLoader });

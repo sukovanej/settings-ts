@@ -1,69 +1,39 @@
-import * as E from "fp-ts/Either";
-import {
-  createMissingFieldParseError,
-  createValidationError,
-} from "../src/errors";
-import { createParser } from "../src/parser";
+import * as IOE from "fp-ts/IOEither";
+import { pipe } from "fp-ts/lib/function";
+import mockedEnv from "mocked-env";
+import { createEnvSettings } from "../src/settings";
 import * as S from "../src/specs";
 
-describe("createParser", () => {
-  test("succeeds for empty settings struct", () => {
-    const settings = createParser({});
-    expect(settings.parse({})).toStrictEqual(E.of({}));
-  });
+describe("settings", () => {
+  test("example: settings from env", () => {
+    // TODO: this test is probably not paralelizable and needs to run in sequence
 
-  test("succeeds for string spec", () => {
-    const settings = createParser({ connectionString: S.string });
+    const restore = mockedEnv({
+      API_URL: "http://server.com",
+      USERNAME: "milan",
+      PASSWORD: "lesnek",
+      SERVER_PORT: "8080",
+    });
 
-    expect(settings.parse({ connectionString: "hello" })).toStrictEqual(
-      E.of({ connectionString: "hello" })
-    );
-  });
+    const settings = createEnvSettings({
+      API_URL: S.url,
+      USERNAME: S.string,
+      PASSWORD: S.string,
+      SERVER_PORT: S.port,
+    });
 
-  test("succeeds for nonEmptyString spec", () => {
-    const settings = createParser({ connectionString: S.nonEmptyString });
-
-    expect(settings.parse({ connectionString: "hello" })).toStrictEqual(
-      E.of({ connectionString: "hello" })
-    );
-  });
-
-  test("fails when input field is missing", () => {
-    const settings = createParser({ connectionString: S.string });
-
-    expect(settings.parse({})).toStrictEqual(
-      E.left(createMissingFieldParseError("connectionString"))
-    );
-  });
-
-  test("fails when input field has different type", () => {
-    const settings = createParser({ connectionString: S.nonEmptyString });
-
-    expect(settings.parse({ connectionString: "" })).toStrictEqual(
-      E.left(
-        createValidationError("connectionString", "Expected non-empty string.")
+    pipe(
+      settings.load,
+      IOE.map((result) =>
+        expect(result).toStrictEqual({
+          API_URL: new URL("http://server.com/"),
+          USERNAME: "milan",
+          PASSWORD: "lesnek",
+          SERVER_PORT: 8080,
+        })
       )
-    );
-  });
+    )();
 
-  test("fails for not valid URL", () => {
-    const settings = createParser({ url: S.url });
-
-    expect(settings.parse({ url: "not-valid-url" })).toStrictEqual(
-      E.left(
-        createValidationError(
-          "url",
-          "Value 'not-valid-url' is not a valid URL."
-        )
-      )
-    );
-  });
-
-  test("succeeds for URL spec", () => {
-    const settings = createParser({ url: S.url });
-
-    expect(settings.parse({ url: "http://domain.com/" })).toStrictEqual(
-      E.of({ url: new URL("http://domain.com/") })
-    );
+    restore();
   });
 });
