@@ -17,5 +17,9 @@ jobs:
       - run: yarn lint
       - run: yarn lint:ts
       - run: yarn build
-      - run: yarn test --ci
+      - run: yarn test:ci
       - run: yarn test:tsd
+      - name: Generate coverage badge
+        uses: jpb06/jest-badges-action@latest
+        with:
+          branches: master
