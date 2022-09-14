@@ -1,4 +1,4 @@
-import * as E from "fp-ts/either";
+import * as E from "fp-ts/Either";
 import { SettingsSpec } from "./parser";
 import { ValidateResult } from "./validateResult";
 
