@@ -23,4 +23,4 @@ jobs:
         uses: jpb06/jest-badges-action@latest
         with:
           branches: master
-          commit-message: 'chore: update test coverage badges'
+          commit-message: "chore: update test coverage badges"
