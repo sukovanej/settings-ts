@@ -3,12 +3,7 @@ import * as IOE from "fp-ts/IOEither";
 import { pipe } from "fp-ts/lib/function";
 import { Loader } from "../loader";
 import { SettingsInput } from "../parser";
-import { readFileSync } from "./utils";
-
-type FileNotFoundError = {
-  error: "FileNotFoundError";
-  message: string;
-};
+import { FileNotFoundError, readFileSync } from "./utils";
 
 type ParseError = {
   error: "ParseError";
@@ -36,11 +31,11 @@ const createLoader = (
 const parseDotEnvFile = (
   content: string
 ): E.Either<ParseError, SettingsInput> => {
-  const lines = content.split("\n");
+  const lines = content.split("\n").filter((line) => line.length !== 0);
   const result: SettingsInput = {};
 
   for (const [index, line] of lines.entries()) {
-    const parsedLine = parseLine(index, line, result);
+    const parsedLine = parseLine(index + 1, line, result);
 
     if (E.isLeft(parsedLine)) {
       return parsedLine;
@@ -66,7 +61,7 @@ const parseLine = (
 
   const [fieldKey, fieldValue] = values;
 
-  if (/^[a-zA-Z_]+[a-zA-Z0-9_]*$/.test(fieldKey)) {
+  if (!/^[a-zA-Z_]+[a-zA-Z0-9_]*$/.test(fieldKey)) {
     return E.left(
       createParserError(`Unexpected field name '${fieldKey}' on line ${index}.`)
     );

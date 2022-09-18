@@ -1,8 +1,7 @@
 import * as IOE from "fp-ts/IOEither";
 import { pipe } from "fp-ts/lib/function";
 import mockedEnv from "mocked-env";
-import path from "path";
-import { createDotEnvFileSettings, createEnvSettings } from "../src/settings";
+import { createEnvSettings } from "../src/settings";
 import * as S from "../src/specs";
 
 describe("settings", () => {
@@ -36,23 +35,6 @@ describe("settings", () => {
     )();
 
     restore();
-  });
-
-  test("example: dotenv file", () => {
-    const mockFilePath = path.join(__filename, "mocks/example.env");
-    const settings = createDotEnvFileSettings(mockFilePath, {
-      URL: S.url,
-      PI: S.number,
-    });
-
-    pipe(
-      settings.load,
-      IOE.map((result) =>
-        expect(result).toStrictEqual({
-          URL: new URL("http://url.com"),
-          PI: 3.14,
-        })
-      )
-    )();
+    expect.assertions(1);
   });
 });

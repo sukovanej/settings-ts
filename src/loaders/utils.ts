@@ -4,12 +4,12 @@ import fs from "fs";
 
 export type FileNotFoundError = {
   error: "FileNotFoundError";
-  message: string;
+  path: string;
 };
 
-const createFileNotFoundError = (message: string): FileNotFoundError => ({
+const createFileNotFoundError = (path: string): FileNotFoundError => ({
   error: "FileNotFoundError",
-  message,
+  path,
 });
 
 export const readFileSync =
@@ -19,6 +19,6 @@ export const readFileSync =
       const result = fs.readFileSync(fileName, { encoding: "utf8" });
       return E.of(result);
     } catch (e) {
-      return E.left(createFileNotFoundError(e as string));
+      return E.left(createFileNotFoundError(fileName));
     }
   };
